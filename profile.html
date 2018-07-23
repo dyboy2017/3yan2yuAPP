@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>个人资料</title>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <a class="mui-icon mui-pull-right" style="font-size: 16px;inline:16px;margin-top: 5px;">确认修改</a>
+	    <h1 class="mui-title">个人资料</h1>
+	</header>
+	
+	<div class="mui-content public-margin-top public-content-padding">
+		
+		<h5>基本资料</h5>
+		<div class="mui-input-group">
+		    <div class="mui-input-row">
+		        <label>昵称</label>
+		        <input type="text" maxlength="12" class="mui-input-clear nickname" placeholder="">
+		    </div>
+		    <div class="mui-input-row">
+		        <label>性别</label>
+		        <input type="text" maxlength="2" class="mui-input-clear user_sex" placeholder="">
+		    </div>
+		    <div class="mui-input-row">
+		        <label>电话</label>
+		        <input type="text" maxlength="11" class="mui-input-clear user_phone" placeholder="">
+		    </div>
+		</div>
+		<h5>我的会话口令</h5>
+		<div class="mui-input-group">
+		    <div class="mui-input-row">
+		        <label>口令</label>
+		        <input type="text" maxlength="10" class="mui-input-clear user_kouling" placeholder="">
+		    </div>
+		</div>
+		<h5>我的头像</h5>
+		<div class="mui-input-group">
+		    <div class="mui-input-row">
+		        <label>头像</label>
+		        <input type="file" id="avater" accept="image/*" />
+		    </div>
+		</div>
+		
+		
+	 
+	</div>
+
+    
+	    
+	    
+	
+	<script src="js/mui.min.js"></script>
+	<script src="js/dongyi.js"></script>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		dj.init();
+		var login_status = localStorage.getItem("login_status");
+		var username = localStorage.getItem("username");
+		var main_url = localStorage.getItem("main_url");
+		
+		//页面接收资料更新通知
+		dj.receiveNotice('refresh',function(event){
+			get_user_info();
+		});
+		
+		//获取用户资料
+		function get_user_info(){
+			$.get(main_url + "function/user_action.php?action=get_user_info&username_data="+username,function(data,status){
+				if(data.code){
+					$(".nickname").val(data.msg.nickname);
+					$(".user_sex").val(data.msg.sex);
+					$(".user_phone").val(data.msg.phone);
+					$(".user_kouling").val(data.msg.sec_token);
+				}
+				else{
+					mui.alert(data.msg,'结果','确认',function (e) {},'div');
+				}
+			})
+		}
+		get_user_info();
+		
+		function chage_info(){
+			var nickname = $(".nickname").val();
+			var user_sex = $(".user_sex").val();
+			var user_phone = $(".user_phone").val();
+			var user_kouling = $(".user_kouling").val();
+			
+			//基本数据
+			
+			if(nickname && user_kouling){
+				$.post(main_url + 'function/user_action.php?action=update_data',{
+					'nickname_data':nickname,
+					'sex_data':user_sex,
+					'phone_data':user_phone,
+					'kouling_data':user_kouling,
+					'username_data':username
+				},function(data){
+					if(data.code == '1'){
+						var noticeArr = ['me','profile'];
+						dj.sendNotice(noticeArr,'refresh',{
+							msg:'更新成功'
+						});//更新通知
+						
+						dj.prompt(data.msg);
+//							dj.closeCurrentInterface();
+						dj.closeWaiting();
+					}
+					else{
+						dj.prompt(data.msg);
+						dj.closeWaiting();
+					}
+				})
+			}
+			else{
+				dj.closeWaiting();
+				dj.prompt("昵称和口令不能为空");
+				return;
+			}
+		}
+
+
+		//提交修改的数据
+		$(".mui-pull-right").click(function(){
+			
+			mui.confirm('确认修改当前的资料？','提示',['取消','确认'],function (e) {
+				if(e.index == 1){
+					dj.showWaiting('修改中');
+					
+					//修改头像
+					var user_head = $("#avater").prop('files');
+					if(user_head[0]){
+						var filedata = new FormData();
+	 					filedata.append('file', user_head[0]);
+						 $.ajax({
+							  url: main_url+'function/get_image_url.php?action=up_img',
+							  type: 'POST',
+							  data: filedata,
+							  cache: false,
+							  processData: false,
+							  contentType: false,
+							  success:function(data){
+							  	if(data.code == '1'){
+							  		//上传成功
+							  		//alert(data.url);
+							  		//修改数据
+							  		$.post(main_url+'function/user_action.php?action=update_head',{
+							  			'img_src_data':data.url,
+							  			'username_data':username
+							  		},function(data){
+							  			//无操作
+							  			var noticeArr = ['me','profile'];
+										dj.sendNotice(noticeArr,'refresh',{
+											msg:'更新成功'
+										});//更新通知
+							  		})
+							  	}
+							  	else{
+							  		dj.prompt(data.msg);
+							  	}
+							  },
+							  error:function(xml){
+							  	alert(xml);
+							  }
+						 });
+					}
+					setTimeout('chage_info()',5000);
+				}
+			},'div');
+		});
+		
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/app.css"/>
+	</head>
+
+	<body>
+		
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">新用户注册</h1>
+		</header>
+		
+		<div class="mui-content">
+			
+		    <form class="mui-input-group" style="margin-top: 20px;">
+			    <div class="mui-input-row">
+			        <label>用户名</label>
+			        <input type="text" class="mui-input-clear" id="username" maxlength="8" placeholder="用户名">
+			    </div>
+			    <div class="mui-input-row">
+			        <label>密码</label>
+			        <input type="password" class="mui-input-clear" id="pass" maxlength="16" placeholder="密码">
+			    </div>
+			    <div class="mui-input-row">
+			        <label>确认密码</label>
+			        <input type="password" class="mui-input-clear" id="pass_confirm" maxlength="16" placeholder="确认密码">
+			    </div>
+			    <div class="mui-input-row">
+					<label>邀请码</label>
+					<input id='yaoqing_code' type="number" class="mui-input-clear mui-input" maxlength="6" placeholder="请输入邀请码">
+					<button class="yzm-btn" id="send_code">获取邀请码</button>
+				</div>
+			    
+			</form>
+			<div class="mui-content-padded">
+				<button id='reg_btn' class="mui-btn mui-btn-block mui-btn-primary" style="padding: 8px;">注册</button>
+			</div>
+		</div>
+		
+		
+		<script src="js/mui.min.js"></script>
+		<script src="js/dongyi.js"></script>
+		<script src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript">
+			dj.init();
+			
+			var main_url = localStorage.getItem("main_url");
+			
+			//获取邀请码
+			$("#send_code").click(function(){
+				dj.showWaiting("获取邀请码中...");
+            	$.get(main_url+'function/user_action.php?action=get_code',function(data){
+            		if(data.code == 1){
+            			dj.closeWaiting();
+            			mui.alert('您的邀请码：'+data.msg,'邀请码','确认',function (e) {})
+            		}
+            	})
+            	dj.closeWaiting();
+			})
+			
+			//注册按钮单击
+			$("#reg_btn").click(function(){
+				dj.showWaiting("注册中");
+				var username = $("#username").val();
+				var password_1 = $("#pass").val();
+				var password_2 = $("#pass_confirm").val();
+				var yaoqingcode = $("#yaoqing_code").val();
+				if(username && password_1 && password_2 && yaoqingcode){
+					if(password_1 != password_2){
+						dj.closeWaiting();
+						mui.alert('两次密码不一致，请重新填写','提示','确认',function (e) {},'div')
+						dj.id("pass").value = "";
+						dj.id("pass_confirm").value = "";
+						return;
+					}
+					$.post(main_url+'function/user_action.php?action=user_reg',{
+						'username_data':username,
+						'password_data':password_1,
+						'rand_code_data':yaoqingcode
+					},function(data){
+						if(data.code == 1){
+							dj.closeWaiting();
+							mui.alert('注册成功','结果','确认',function (e) {},'div');
+							return;
+						}
+						else{
+							dj.closeWaiting();
+							dj.prompt(data.msg);
+							return;
+						}
+					})
+				}
+				else{
+					dj.closeWaiting();
+					mui.alert('信息填写不完整','提示','确认',function (e) {},'div')
+					return;
+				}
+			})
+			
+			
+			
+			
+		</script>
+	</body>
+
+</html>

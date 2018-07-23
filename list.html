@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+</head>
+<body>
+	<!--标题-->
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-icon-personadd mui-pull-right" id="add"></a>
+	    <h1 class="mui-title">消息列表</h1>
+	</header>
+	<!--主体-->
+	<div class="mui-content">
+		<!--<div class="mui-scroll-wrapper">-->
+				<ul class="mui-table-view">
+	    	
+			        <!--<li class="mui-table-view-cell mui-media" onClick="chat(this,2,'唐老鸭')">
+			            <a href="javascript:;">
+			                <img class="mui-media-object mui-pull-left" src="img/tang.jpg">
+			                <div class="mui-media-body">
+			                   唐老鸭
+			                    <p class="mui-ellipsis">给我转账[￥1000]</p>
+			                </div>
+			                <span class="mui-badge mui-badge-danger">1</span>
+			            </a>
+			        </li>-->
+			        
+			    </ul>
+		<!--</div>-->
+	    
+	    
+	    
+	    
+	</div>
+	
+	
+	
+	
+	<script src="js/mui.min.js"></script>
+	<script src="js/dongyi.js"></script>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		dj.init();
+		var login_status = localStorage.getItem("login_status");
+		var username = localStorage.getItem("username");
+		var main_url = localStorage.getItem("main_url");
+
+		//获取最新消息
+		function get_new_message(username){
+			var username = localStorage.getItem("username");
+			$.post(main_url + "function/chat_list.php?action=get_list",{
+				username_data:username
+			},
+			function(data){
+				if(data.code){
+					var str = "";
+					$.each(data.msg,function(index,obj){
+						str = str + '<li class="mui-table-view-cell mui-media" onClick="chat(this,'+obj.r_id+',\''+obj.head_img+'\','+obj.chat_room+',\''+obj.nickname+'\')"><a href="javascript:;"><img class="mui-media-object mui-pull-left" src="'+obj.head_img+'"><div class="mui-media-body">'+obj.nickname+'<p class="mui-ellipsis">'+obj.message+'</p></div><span class="mui-badge mui-badge-danger">'+obj.status+'</span></a></li>';
+					})
+					$(".mui-table-view").html(str);
+				}
+				else{
+					$(".mui-table-view").html("未登录...");
+				}
+			})
+		}
+		get_new_message(username);
+		setInterval("get_new_message(username)",5000);
+		
+		
+		//页面接收资料更新通知
+		dj.receiveNotice('refresh',function(event){
+			
+			if(login_status == 1){
+				//获取消息列表
+				get_new_message(username);
+			}
+			else{
+				dj.newInterface({
+					url:'login.html',
+					id:'login',
+					show:{
+						aniShow:"pop-in"
+					}
+				})
+			}
+		});
+		
+		//添加聊天好友
+		var add_user = dj.id("add");
+		dj.click(add_user,function(){
+			dj.newInterface({
+				url:"add.html",
+				id:"add",
+				show:{
+					aniShow:"pop-in"
+				}
+			})
+		})
+		
+		//聊天跳转函数
+		function chat(u,r_id,r_head,chat_room,nickname){
+			localStorage.setItem("chat_to_usernick",nickname);
+			localStorage.setItem("r_id",r_id);
+			localStorage.setItem("r_head",r_head);
+			localStorage.setItem("chat_room",chat_room);
+//			$(u).find(".mui-badge").hide();
+			var noticeArr = ['chat'];
+			dj.sendNotice(noticeArr,'refresh',{
+				msg:'更新成功'
+			});//更新通知
+			
+			dj.newInterface({
+				url:"chat.html",
+				id:"chat",
+				show:{
+					aniShow: 'pop-in'
+				}
+			})
+		}
+		
+//		document.body.scrollTop = document.body.offsetHeight;
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title>聊天详情</title>
+		<link href="css/mui.min.css" rel="stylesheet"/>
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
+    	<link rel="stylesheet" type="text/css" href="css/app.css"/>
+
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <a class=" mui-icon mui-icon-trash mui-pull-right"></a>
+		    <h1 class="mui-title" id="touser_nick"></h1>
+		</header>
+		
+		
+		<div class="mui-content">
+			
+			<div class="chat-tip">
+	    		<p class="public-right-text">为了确保聊天信息安全性，系统临时保留信息</p>
+	    		<p class="public-right-text">只有最近五条，如需删除，请点击右上角即可</p>
+	    	</div>
+			<div class="chat_box public-margin-top public-content-padding" id="chat_box">
+    			
+		    	
+    			<!--聊天信息-->
+    			
+    		
+			</div>
+					
+
+	    <!--消息输入框-->
+	    <div class="chat_footer">
+	    	<input type="text"  id="send_msg" class="" placeholder="请输入文字..."/>
+	    	<button id="send_btn">发送</button>
+	    </div>
+	    
+	 </div> <!-- content  end -->
+		
+		
+		<script src="js/mui.min.js"></script>
+		<script src="js/dongyi.js"></script>
+		<script src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript">
+			dj.init();
+
+			var username = localStorage.getItem("username");
+			var main_url = localStorage.getItem("main_url");
+			var now_userhead = localStorage.getItem("now_userhead");
+			var now_userid = localStorage.getItem("now_userid");
+			
+			
+			//滚动到底部-界面操作
+			function scrollToEnd(){
+	            var h = $(document).height()-$(window).height();
+	            $(document).scrollTop(h); 
+			}
+			
+			//更新消息、信息
+			function update_news(r_id,r_head,chat_room){
+				$.post(main_url+'function/chat_list.php?action=liaotian_info',{
+					'username_data':username,
+					'chat_room_data':chat_room
+				},function(data){
+					if(data.code == 1){
+						$.each(data.msg,function(index,obj){
+							if(obj.l_id != now_userid){	//对方
+								$(".chat_box").prepend('<div class="public-chat-box"><div class="public-chat-img left-chat-img"><img src="'+r_head+'"/></div><div class="public-chat-text left-chat-text"><a>'+obj.message+'</a><span class="iconfont icon-sanjiaoxing-copy"></span></div><p class="public-clear-both"></p></div><p class="chat-box-time"><span>'+obj.time+'</span></p>');
+							}
+							else{	//自己  当前不支持图片消息
+								$(".chat_box").prepend('<div class="public-chat-box chat-right-box"><div class="public-chat-img right-chat-img"><img src="'+now_userhead+'"/></div><div class="public-chat-text right-chat-text"><a>'+obj.message+'</a><span class="iconfont icon-sanjiaoxing-xia1"></span></div><p class="public-clear-both"></p></div>');
+							}
+						})
+						$(".chat_box").append('<div class="div_space" style="height:80px"></div>');
+						scrollToEnd();
+					}
+					else{
+						dj.prompt(data.msg);
+					}
+				})
+			}
+			
+			
+			//页面接收资料更新通知
+			dj.receiveNotice('refresh',function(event){
+				//读取localstorage 临时数据
+				var nickname = localStorage.getItem("chat_to_usernick");
+				var r_id = localStorage.getItem("r_id");
+				var r_head = localStorage.getItem("r_head");
+				var chat_room = localStorage.getItem("chat_room");//房间id
+				//更新title
+				$("#touser_nick").text(nickname);
+				//更新消息
+				//function ...
+				update_news(r_id,r_head,chat_room);
+			});
+			
+			
+			//发送消息
+			$("#send_btn").click(function(){
+				$("send_btn").attr("disabled",true);
+				
+				var send_msg = $("#send_msg").val();
+				$("#send_msg").val('');
+				if(send_msg){
+					//发起请求
+					//param：msg r_id chat_room
+					
+					var r_id2 = localStorage.getItem("r_id");
+					var chat_room2 = localStorage.getItem("chat_room");
+					$.post(main_url+'function/chat_list.php?action=send_m',{
+						'username_data':username,
+						'msg_data':send_msg,
+						'r_id_data':r_id2,
+						'chat_room_data':chat_room2
+					},function(data){
+						if(data.code == 0){
+							dj.prompt("发送消息失败");
+							return;
+						}
+						else{
+							//发送消息成功
+//							$(".div_space").hide();
+							$(".chat_box").append('<div class="public-chat-box chat-right-box"><div class="public-chat-img right-chat-img"><img src="'+now_userhead+'"/></div><div class="public-chat-text right-chat-text"><a>'+send_msg+'</a><span class="iconfont icon-sanjiaoxing-xia1"></span></div><p class="public-clear-both"></p></div><div class="div_space" style="height:80px"></div>');
+							setTimeout('scrollToEnd()',200);
+						}
+					})
+				}
+				else{
+					//调试
+					dj.prompt("消息不能为空");
+				}
+				//是否有内容都解除按钮禁用
+				$("send_btn").attr("disabled",true);	//解除按钮
+			})
+			
+			function del_session(chat_room3){
+				dj.showWaiting("删除中");
+				//...删除会话
+				//function()...
+				$.post(main_url+'function/chat_list.php?action=del_session',{
+					'username_data':username,
+					'chat_room_data':chat_room3
+				},function(data){
+					if(data.code == 1){
+						var arr = ['list'];
+						var noticeArr = ['list'];
+						dj.sendNotice(noticeArr,'refresh',{
+							msg:'更新成功'
+						});//更新通知
+						dj.closeWaiting();
+						dj.prompt(data.msg);
+						dj.closeCurrentInterface();
+						dj.closeCurrentInterface();
+					}
+					else{
+						dj.closeWaiting();
+						dj.prompt(data.msg);
+						return;
+					}
+				})
+			}
+			
+			$('.mui-icon-trash').click(function(){
+				var chat_room3 = localStorage.getItem("chat_room");
+				mui.confirm('此操作会删除你们的会话以及所有聊天记录，此操作不可恢复！','注意',['取消','删除'],function (e) {
+					if(e.index == 1){
+						del_session(chat_room3);
+					}
+				},'div')
+			})
+			
+			
+			
+		</script>
+	</body>
+</html>

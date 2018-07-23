@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>我的</title>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+</head>
+<body>
+	<div class="mui-content">
+	    <div class="user_box">
+    		<img src="./img/nohead.jpg" id="user_head" alt="" width="100px" height="100px"/>
+			<p class="nickname"></p>
+			<p>性别:<span class="user_sex"></span></p>
+	    	
+	    </div>
+	    
+	    <div class="setting">
+	    	<ul class="mui-table-view">
+    	        <li class="mui-table-view-cell">
+    	            <a class="mui-navigate-right" id="profile">
+    	                个人资料
+    	            </a>
+    	        </li>
+    	        <li class="mui-table-view-cell" id="suggest">
+    	            <a class="mui-navigate-right">
+    	                 	客服帮助
+    	            </a>
+    	        </li>
+    	        <li class="mui-table-view-cell" id="update">
+    	            <a class="mui-navigate-right">
+    	                更新升级
+    	            </a>
+    	        </li>
+    	        <li class="mui-table-view-cell" id="aboutus">
+    	            <a class="mui-navigate-right">
+    	                	关于我们
+    	            </a>
+    	        </li>
+    	    </ul>
+	    </div>
+	    <div style="height:25px"></div>
+	    <div class="exit_btn">
+	    	注销
+	    </div>
+	    <div style="height:10px"></div>
+	    <div class="clear_chat" id="clear">
+	    	清除缓存
+	    </div>
+	    <div style="height:25px"></div>
+	    <p align="center">ORG.DYBOY.CN</p>
+	    
+	</div>
+    
+	    
+	    
+	
+	<script src="js/mui.min.js"></script>
+	<script src="js/dongyi.js"></script>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		dj.init();
+		var login_status = localStorage.getItem("login_status");
+		var username = localStorage.getItem("username");
+		var main_url = localStorage.getItem("main_url");
+		
+		//页面接收资料更新通知
+		dj.receiveNotice('refresh',function(event){
+			get_user_info();
+		});
+		
+		//获取用户资料
+		function get_user_info(){
+			$.get(main_url + "function/user_action.php?action=get_user_info&username_data="+username,function(data,status){
+				if(data.code){
+					$(".user_box img").attr("src",data.msg.head_img);
+					$(".nickname").text(data.msg.nickname);
+					$(".user_sex").text(data.msg.sex);
+					localStorage.setItem("now_userid",data.msg.id);
+					localStorage.setItem("now_userhead",data.msg.head_img);
+				}
+				else{
+					alert(data.msg);
+				}
+			})
+		}
+		get_user_info();
+		
+		
+		//修改个人资料
+		var profile = dj.id("profile");
+		dj.click(profile,function(){
+			dj.newInterface({
+				url:"profile.html",
+				id:"profile",
+				show:{
+					aniShow:"pop-in"
+				}
+			})
+		})
+		
+		//建议反馈
+		var suggest = dj.id("suggest");
+		dj.click(suggest,function(){
+			dj.newInterface({
+				url:"suggest.html",
+				id:"suggest",
+				show:{
+					aniShow:"pop-in"
+				}
+			})
+		})
+		
+		//更新
+		var update = dj.id("update");
+		dj.click(update,function(){
+			dj.showWaiting("检查更新中");
+			mui.plusReady(function(){
+				var v = plus.runtime.version;//版本
+				$.get(main_url+'function/user_action.php?action=update_app',function(data){
+					
+					if(data.code == 1){
+						if(data.msg.version == v){
+							dj.closeWaiting();
+							dj.prompt('已是最新版本');
+						}
+						else{
+							dj.closeWaiting();
+							mui.confirm(data.msg.description,'更新提示',['取消','确认'],function (e) {
+								if(e.index == 1){
+									dj.openUrl(data.msg.url);
+								}
+							},'div')
+						}
+					}
+					else{
+						dj.closeWaiting();
+						dj.prompt("网络错误");
+					}
+					
+					
+				})
+			})
+		})
+		
+		
+		//关于我们
+		var update = dj.id("aboutus");
+		dj.click(update,function(){
+			dj.newInterface({
+				url:'about.html',
+				id:'about',
+				show:{
+					aniShow:"pop-in"
+				}
+			})
+		})
+		
+		
+		//清除缓存
+		var clear = dj.id("clear");
+		dj.click(clear,function(){
+			plus.cache.calculate(function(size) {
+	            console.log(size)
+	            sizeCache = size;
+	            mui.confirm("您目前的系统缓存为" + sizeCache + "B？", "清除缓存", ["确认", "取消"], function(e) {
+	                if(e.index == 1) {} else {
+	                    plus.cache.clear(function() {
+	                        dj.prompt("成功清除"+ sizeCache +"B");
+	                    });
+	                }
+	            },'div');
+	        });
+		})
+		
+		//注销登陆
+		$("body").on('click','.exit_btn',function(){
+			mui.confirm('确定注销登录吗','提醒',['取消','确认'],function (e) {
+				if(e.index == 1){
+					dj.showWaiting();
+					$.get(main_url + "function/user_action.php?action=user_logout",function(data){});
+					localStorage.removeItem("username");
+					localStorage.removeItem("id");
+					
+					dj.prompt("注销成功!");
+					dj.closeWaiting();
+					dj.closeCurrentInterface();
+					dj.closeCurrentInterface();
+				}
+			},'div')
+		})
+		
+		//更新头像
+		var bac = $(".user_box");
+		$(".user_box").click(function(){
+			var arrs = [{title:'照相机'},{title:'相册'}];
+			dj.actionSheet(arrs,{
+				succFn:function(data){
+					var srcimg = data;//本地图片路径
+					//bac.attr("background-image","url("+data+")");
+					dj.prompt("更换背景图片功能正在优化中...");
+				},
+				//是否开启上传
+				isUpload:false,
+				//上传地址
+				uploadUrl:main_url+'function/get_image_url.php?action=up_img',
+				
+			})
+		})
+	</script>
+</body>
+</html>

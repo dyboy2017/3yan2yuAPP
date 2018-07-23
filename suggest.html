@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>客服</title>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <a class="mui-icon mui-icon-image mui-pull-right"></a>
+	    <h1 class="mui-title">客服咨询</h1>
+	</header>
+	
+	<div class="mui-content public-margin-top public-content-padding">
+	<div style="height: 8px;"></div>
+	<div style="padding:4px">
+		<p>&nbsp;&nbsp;抱歉！我们太穷，没有客服，有问题自己解决~</p>
+		<p>&nbsp;&nbsp;你如果非要找漂亮的客服小姐姐，你可以点击右上角的图标试试o(>﹏<)o不要啊</p>
+		<p>
+		 	&nbsp;&nbsp;本APP由<span style="color:red"> DYBOY </span>(一条帅气的单身狗...)基于MUI开源框架开发，特点是可以随时清除聊天记录，此外您的聊天信息都是经过<span style="color:red">混合加密方式</span>加密，充分保护您聊天的隐私和个人信息，使用过程会有稍许卡顿，都是正常现象，换一个手机就好了【滑稽】...<br/>
+		 	&nbsp;&nbsp;老铁，欢迎打赏支持，你的支持就是俺做下去的动力!有任何问题都可以联系我<span style="color:red">QQ:1099718640</span>
+		</p>
+		<div style="height: 15px;"></div>
+		<img src="img/shang.png"/ width="100%">
+	</div>
+	 
+	</div>
+
+    
+	    
+	    
+	
+	<script src="js/mui.min.js"></script>
+	<script src="js/dongyi.js"></script>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		dj.init();
+		$(".mui-icon-image").click(function(){
+			//对接小黄图~
+			$.get("http://gank.io/api/random/data/%E7%A6%8F%E5%88%A9/10",function(data){
+				$.each(data.results,function(index,obj){
+					$(".mui-content").append('<img src="'+obj.url+'" width="100%" /><br/><p align="center">来源:'+obj.who+'</p><br/>');
+				})
+			})
+			dj.prompt("刷新成功！");
+		})
+	</script>
+</body>
+</html>

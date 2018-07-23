@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>login</title>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+    <style type="text/css">
+    	.area {
+			margin: 20px auto 0px auto;
+		}
+		.mui-input-group {
+			margin-top: 10px;
+		}
+		.mui-input-group:first-child {
+			margin-top: 20px;
+		}
+		.mui-input-group label {
+			width: 22%;
+		}
+		.mui-input-row label~input,
+		.mui-input-row label~select,
+		.mui-input-row label~textarea {
+			width: 78%;
+		}
+		.mui-content-padded {
+			margin-top: 25px;
+		}
+		.mui-btn {
+			padding: 10px;
+		}
+		.link-area {
+			display: block;
+			margin-top: 25px;
+			text-align: center;
+		}
+		.spliter {
+			color: #bbb;
+			padding: 0px 8px;
+		}
+		.oauth-area {
+			position: absolute;
+			bottom: 20px;
+			left: 0px;
+			text-align: center;
+			width: 100%;
+			padding: 0px;
+			margin: 0px;
+		}
+		.oauth-area .oauth-btn {
+			display: inline-block;
+			width: 50px;
+			height: 50px;
+			background-size: 30px 30px;
+			background-position: center center;
+			background-repeat: no-repeat;
+			margin: 0px 20px;
+			/*-webkit-filter: grayscale(100%); */
+			border: solid 1px #ddd;
+			border-radius: 25px;
+		}
+		.oauth-area .oauth-btn:active {
+			border: solid 1px #aaa;
+		}
+		.oauth-area .oauth-btn.disabled {
+			background-color: #ddd;
+		}
+		.login_logo{
+			margin: 18px auto;
+			text-align: center;
+		}
+    </style>
+    <script type="text/javascript">
+    	//设置全局的变量
+    	localStorage.setItem("main_url","https://chat.dyboy.cn/")
+    </script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <h1 class="mui-title">三言两语</h1>
+	</header>
+	<div class="mui-content">
+		
+		<!--登陆表单-->
+	    <div class="login_logo">
+				<img src="img/logo.png" style="width: 160px;border:0px;">
+			</div>
+			<form id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label><span class="mui-icon mui-icon-person"></span></label>
+					<input id='username' type="text" class="mui-input-clear mui-input" placeholder="用户名">
+				</div>
+				<div class="mui-input-row">
+					<label><span class="mui-icon mui-icon-locked"></span></label>
+					<input id='pass' type="password" class="mui-input-password" placeholder="请输入密码">
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='login_btn' class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+				<div class="link-area"><a id='reg'>注册账号</a> <span class="spliter">|</span> <a id='forgetPassword'>忘记密码</a>
+				</div>
+			</div>
+			<div class="mui-content-padded">
+				<p align="center">总会有一句话...</p>
+				<p class="yiyan" style="color: red;text-align: center;"></p>
+			</div>
+	</div>
+	
+	<script src="js/mui.min.js"></script>
+	<script src="js/dongyi.js"></script>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		dj.init();
+		
+		localStorage.removeItem('username');
+		var main_url = localStorage.getItem("main_url");
+		
+		function get_yiyan(){
+			$.get("https://sslapi.hitokoto.cn",function(data){
+				data = $.parseJSON(data);
+				$(".yiyan").text(data.hitokoto);
+			})
+		}
+		get_yiyan();
+		
+		//login
+		var login = dj.id("login_btn");
+		var user = dj.id("username");
+		var pwd = dj.id("pass");
+		dj.click(login,function(){
+			dj.showWaiting('登录中...');
+			if(pwd.value && user.value){
+				$.post(main_url+"function/user_action.php?action=user_login",{
+					username_data:username.value,
+					password_data:pass.value
+				},
+				function(data,status){
+					if(data.code){
+						dj.prompt("登录成功!");
+						localStorage.setItem("username",user.value);
+						localStorage.setItem("login_status","1");
+						
+						var noticeArr = ['list','me'];
+						dj.sendNotice(noticeArr,'refresh',{
+							msg:'更新成功'
+						});//资料更新通知
+						dj.closeWaiting();
+						dj.newInterface({
+							url:'index.html',
+							id:'index',
+							show: {
+								aniShow: 'pop-in'
+							}
+						})
+					}
+					else{
+						dj.closeWaiting();
+						mui.alert(data.msg,'登陆结果','确认',function (e) {},'div');
+						return false;
+					}
+				})
+			}
+			else{
+				dj.closeWaiting();
+				dj.prompt("账号密码不为空");
+			}
+		})
+		
+		//reg
+		$("#reg").click(function(){
+			dj.newInterface({
+				url:'reg.html',
+				id:'reg',
+				show:{
+					aniShow:"slide-in-right"
+				}
+			})
+		})
+		
+		//forget
+		$("#forgetPassword").click(function(){
+			mui.alert('程序猿带着他的小娘子跑了...我们没有没有办法，拿着钱包抵工资╭(╯^╰)╮','提示','确认',function (e) {},'div')
+			return;
+		})
+		
+		
+		
+	</script>
+</body>
+</html>

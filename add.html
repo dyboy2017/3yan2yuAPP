@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>搜索&添加</title>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">搜索&添加</h1>
+	</header>
+	
+	<div class="mui-content">
+	    <div class="mui-input-row mui-search">
+		    <input type="search" placeholder="请输入关键词搜索">
+		    <button class="search_button">搜索</button>
+		</div>
+		<h5>搜索结果:</h5>
+		<div class="search_result">
+			<ul class="mui-table-view search_table">
+				
+			    <!--<li class="mui-table-view-cell mui-media">
+			        <a href="javascript:;">
+			            <img class="mui-media-object mui-pull-left" src="img/tang.jpg">
+			            <div class="mui-media-body">
+			               唐老鸭的幸福1
+			            </div>
+			        </a>
+			    </li>-->
+			   
+			</ul>
+		</div>
+		<div style="height: 52px;"></div>
+		<h5>推荐好友:</h5>
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell mui-media" onclick="add_user(1)">
+			        <a href="javascript:;">
+			            <img class="mui-media-object mui-pull-left" src="img/user.jpg">
+			            <div class="mui-media-body">
+			               小东
+			               <p style="font-size: 12px;">你就当我是个客服好啦~口令:123</p>
+			            </div>
+			        </a>
+			    </li>
+		</ul>
+	    
+	    
+	    
+	</div>
+
+    
+	    
+	    
+	
+	<script src="js/mui.min.js"></script>
+	<script src="js/dongyi.js"></script>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		dj.init();
+		
+		var login_status = localStorage.getItem("login_status");
+		var username = localStorage.getItem("username");
+		var main_url = localStorage.getItem("main_url");
+		
+		//add添加好友
+		function add_user(id){
+			 mui.prompt('\t\t请输入对方的聊天口令','例如:123456','发起聊天',['取消','验证'],function (e) {
+			    if(e.index == 1){//确认
+			    	if(e.value == ''){
+				    	dj.prompt("请输入口令!");
+				    	return;
+				    }
+			    	$.post(main_url+'function/user_action.php?action=yanzheng_token',{
+			    		'submit_token':e.value,
+			    		'username_data':username,
+			    		'r_user_id':id
+			    	},function(data){
+			    		if(data.code == 1){
+			    			var noticeArr = ['list'];
+							dj.sendNotice(noticeArr,'refresh',{
+								msg:'更新成功'
+							});//更新通知
+							dj.prompt(data.msg);
+							return;
+			    		}
+			    		else{
+			    			dj.prompt(data.msg);
+			    		}
+			    	})
+			    }
+			},'div')
+			
+		}
+		
+		//搜索单击按钮
+		$(".search_button").click(function(event){
+			$(".search_button").attr("disabled","true");
+			dj.showWaiting();
+			var keyword = $("input[type='search']").val();
+			if(keyword == ''){
+				dj.prompt("请输入用户名或昵称");
+				return;
+			}
+			$.get(main_url + 'function/user_action.php?action=search_users&keyword_data='+keyword,function(data){
+				if(data.code == 1){
+					var str = "";
+					$.each(data.msg,function(index,obj){
+						str = str + '<li class="mui-table-view-cell mui-media" onClick="add_user('+obj.id+')"><a href="javascript:;"><img class="mui-media-object mui-pull-left" src="'+ obj.head_img+'"><div class="mui-media-body">'+ obj.nickname+'</div></a></li>';
+					})
+					$(".search_table").html(str);
+					dj.closeWaiting();
+				}
+				else{
+					dj.prompt(data.msg);
+					dj.closeWaiting();
+				}
+			})
+			$(".search_button").removeAttr("disabled");
+		})
+		
+		
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+
+
+
+/**公用*/
+/*通用内边距，距离上边*/
+.public-margin-top{
+	margin-top: 10px;
+}
+/*通用的内边距*/
+.public-content-padding{
+	padding: 15px;
+}
+/*通用清除浮动*/
+.public-clear-both{
+	clear: both;
+}
+
+
+/**系统css*/
+.mui-search{
+	width: 100%;
+	overflow: hidden;
+}
+.mui-search input[type=search]{
+	background-color: #fff!important;
+	float: left;
+	width: 80%;
+	margin-top: 2px;
+}
+.mui-search button{
+	float: left;
+	margin-top: 2px;
+	margin-left: 4px;
+	width: 18%;
+	background-color: #007AFF;
+	color: #fff;
+}
+.mui-scroll-wrapper{
+	top:50px;
+	bottom:60px;
+}
+/**注册界面*/
+.yzm-btn{
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	color: #999;
+	margin: 4px 10px;
+}
+
+/**用户界面*/
+.user_box{
+	background-image: url(../img/back_blue_big.png);
+	background-size: cover;
+	background-repeat: no-repeat;
+	height: 210px;
+	text-align: center;
+}
+.user_box img{
+	margin-top: 25px;
+	border-radius: 50px;
+	background-color: #FAFAFA;
+	padding: 3px;
+}
+.user_box p{
+	color: #fff;
+}
+.mui-table-view-cell{
+	color: #555;
+}
+.exit_btn{
+	background-color: #FF0000;
+	color: #fff;
+	font-size: 16px;
+	text-align: center;
+	padding: 10px 20px;
+	margin: 0px 20px;
+	border-radius: 5px;
+}
+.exit_btn:hover{
+	background-color: #DD524D;
+}
+.clear_chat{
+	background-color: #007AFF;
+	color: #fff;
+	font-size: 16px;
+	text-align: center;
+	padding: 10px 20px;
+	margin: 0px 20px;
+	border-radius: 5px;
+}
+.clear_chat:hover{
+	background-color: #0062CC;
+}
+
+/**聊天*/
+.chat_footer{
+	width: 100%;
+	position: fixed;
+	bottom: 1px;
+	overflow: hidden;
+}
+.chat_footer input{
+	float: left;
+	margin-left: 6px;
+	width: 80%;
+	height: 32px;
+	border-radius: 4px;
+	border: none;
+}
+.chat_footer button{
+	margin-left: 3px;
+	text-align: center;
+	float: left;
+	width: 17%;
+	color: #fff;
+	border: 1px solid #007AFF;
+	background-color: #007AFF;
+}
+.chat-tip{
+	/*border: 1px solid red;*/
+	margin-top: 20px;
+	text-align: center;
+	margin-bottom: 20px;
+}
+.chat-tip p{
+	line-height: 12px;
+}
+
+#chat_box{
+	/*background-color: red!important;*/
+	/*height: 500px;*/
+	/*overflow: hidden;*/
+	/*position: absolute;*/
+	margin-bottom: 50px;
+}
+.public-chat-box{
+	width: 85%;
+}
+.public-chat-box img{
+	width: 50px;
+}
+.public-chat-text{
+	max-width: 72%;
+	background-color: #fff;
+	font-size: 14px;
+	min-height: 50px;
+	padding: 10px 10px 5px 10px;
+	border-radius: 4px;
+	position: relative;
+}
+.public-chat-text a{
+	color: #333;
+}
+.left-chat-img{
+	margin-right: 20px;
+}
+.left-chat-img,.left-chat-text{
+	float: left;
+}
+.left-chat-text span{
+	position: absolute;
+	top: 10px;
+	left: -11px;
+	color: #fff;
+}
+.chat-right-box{
+	float: right;
+}
+.chat-right-box div{
+	float: right;
+}
+.right-chat-img{
+	margin-left: 20px;
+}
+.right-chat-text{
+	background-color: #B1E766;
+}
+.right-chat-text span{
+	color: #B1E766;
+	position: absolute;
+	right: -11px;
+	top: 10px;
+}
+.chat-box-time{
+	text-align: center;
+	margin: 10px 0px;
+}
+.chat-box-time span{
+	background-color: #D4D4D4;
+	color: #FFF;
+	padding: 2px 4px;
+	border-radius: 3px;
+}
+
+/*关于我们页面*/
+.about-div{
+	margin-top:8%;
+	text-align: center;
+}
+.about-div img{
+	width:180px;
+	border-radius:20px;
+	margin-bottom: 10px;
+}
+.about-bq{
+	position: fixed;
+	bottom:30px;
+	width:100%;
+	text-align: center;
+}

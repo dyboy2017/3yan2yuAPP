@@ -1,0 +1,126 @@
+{
+  "index.html": {
+    "resources": [
+      "js/dongyi.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-2.1.0.js",
+      "list.html",
+      "img/background.jpg"
+    ],
+    "refer": [
+      "me.html",
+      "list.html"
+    ]
+  },
+  "list.html": {
+    "resources": [
+      "img/user.jpg",
+      "img/dogs.jpg",
+      "img/cute.jpg",
+      "js/dongyi.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-2.1.0.js",
+      "js/jquery-3.2.1.min.js",
+      "img/tang.jpg"
+    ],
+    "refer": [
+      "chat.html",
+      "add.html"
+    ]
+  },
+  "me.html": {
+    "resources": [
+      "js/dongyi.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "css/mui.min.css",
+      "js/jquery-2.1.0.js",
+      "img/user.jpg",
+      "img/background.jpg",
+      "img/back_parper.png",
+      "fonts/mui.ttf",
+      "img/dogs.jpg",
+      "js/jquery-3.2.1.min.js",
+      "img/nohead.jpg",
+      "img/back_blue.png",
+      "img/back_blue_big.png"
+    ],
+    "refer": [
+      "suggest.html",
+      "profile.html",
+      "about.html"
+    ]
+  },
+  "chat.html": {
+    "resources": [
+      "js/dongyi.js",
+      "img/dogs.jpg",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "img/tang.jpg",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "css/iconfont.css"
+    ]
+  },
+  "login.html": {
+    "resources": [
+      "js/dongyi.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js"
+    ],
+    "refer": [
+      "index.html",
+      "reg.html"
+    ]
+  },
+  "add.html": {
+    "resources": [
+      "img/tang.jpg",
+      "js/dongyi.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "img/user.jpg"
+    ]
+  },
+  "suggest.html": {
+    "resources": [
+      "js/dongyi.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "img/back_parper.png",
+      "img/shang.png"
+    ]
+  },
+  "profile.html": {
+    "resources": [
+      "js/dongyi.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js"
+    ]
+  },
+  "reg.html": {
+    "refer": [
+      "reg.html"
+    ]
+  }
+}
